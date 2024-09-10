@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import { instrumentSans } from "./fonts";
-import { UserProvider } from "@auth0/nextjs-auth0/client";
+
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,10 +16,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`antialiased ${instrumentSans.className}`}>
-        <UserProvider>{children}</UserProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`antialiased ${instrumentSans.className}`}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

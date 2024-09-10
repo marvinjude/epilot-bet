@@ -3,10 +3,8 @@
 import { IOHLCData, SimpleOHLCChart } from "./components/Chart";
 import { geologica } from "./fonts";
 import Button from "./components/Button";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import Link from "next/link";
 import { useState, useRef } from "react";
-
+import { SignOutButton } from "@clerk/nextjs";
 import { PostSelection } from "@/app/components/PostSelection";
 import { Option } from "./types";
 import { Logo } from "./icons/epilot-bet";
@@ -14,7 +12,7 @@ import { UpTrend } from "./icons/up-trend";
 import { DownTrend } from "./icons/down-trend";
 import { RealTimePrice } from "./components/RealTimePrice";
 import toast, { Toaster } from "react-hot-toast";
-import { getRuns } from "./lib/inngest/utils/getRuns";
+import { getInngestEvent } from "./lib/inngest/utils/getInngestEvent";
 import retry from "async-retry";
 import { log } from "@/app/utils/log";
 import { IResolveOptionFunctionOutput } from "./lib/inngest/functions/resolve-option";
@@ -30,10 +28,7 @@ export function HomeClient(props: {
     priceHistory: btcPriceHistory,
   } = props;
 
-  const { user } = useUser();
-  const [priceHistory, setPriceHistory] = useState<IOHLCData[]>(
-    () => btcPriceHistory
-  );
+  const [priceHistory] = useState<IOHLCData[]>(() => btcPriceHistory);
   const [isAwaitingOptionResolution, setIsAwaitingOptionResolution] =
     useState(false);
   const [isInitilizingOption, setIsInitilizingOption] = useState(false);
@@ -87,7 +82,10 @@ export function HomeClient(props: {
 
       setIsInitilizingOption(false);
       setIsAwaitingOptionResolution(true);
-    } catch {}
+    } catch {
+      setIsInitilizingOption(false);
+      setIsAwaitingOptionResolution(false);
+    }
   };
 
   const onCountdownEnd = async () => {
@@ -103,19 +101,25 @@ export function HomeClient(props: {
     try {
       const runResult = await retry(
         async (bail) => {
-          const runs = await getRuns<IResolveOptionFunctionOutput>(
+          const runs = await getInngestEvent<IResolveOptionFunctionOutput>(
             jobRef.current as string
           );
 
-          if (runs[0].status === "Running") {
-            throw new Error("Option is still reolsving, retrying...");
-          }
-
-          if (runs[0].status === "Failed") {
+          if (runs.length < 1) {
             bail(new Error("Option resolution failed"));
           }
 
-          return runs[0];
+          const run = runs[0];
+
+          if (run.status === "Running") {
+            throw new Error("Option is still resolving, retrying...");
+          }
+
+          if (run.status === "Failed") {
+            bail(new Error("Option resolution failed"));
+          }
+
+          return run;
         },
         {
           retries: 10,
@@ -151,7 +155,7 @@ export function HomeClient(props: {
     <div className="min-h-screen px-20">
       <header className="p-5 flex item-center justify-between">
         <Logo />
-        <Link href="/api/auth/logout">Log out</Link>
+        <SignOutButton />
       </header>
       <Toaster />
       <main className="p-5">
@@ -194,14 +198,14 @@ export function HomeClient(props: {
             {!isAwaitingOptionResolution && (
               <div className="flex flex-col items-center">
                 <p className="font-bold uppercase">
-                  {user && `${user?.given_name}, `}WHAT WAY WILL PRICE OF BTC GO
-                  AFTER A MINUTE?
+                  WHAT WAY WILL PRICE OF BTC GO AFTER A MINUTE?
                 </p>
                 <div className="flex gap-2 my-2 items-center">
                   <Button
                     isLoading={
                       isInitilizingOption && lastOptionRef.current === "up"
                     }
+                    disabled={isInitilizingOption}
                     onClick={() => onOption("up")}
                     variant="green"
                     icon={<UpTrend />}
@@ -213,6 +217,7 @@ export function HomeClient(props: {
                     isLoading={
                       isInitilizingOption && lastOptionRef.current === "down"
                     }
+                    disabled={isInitilizingOption}
                     onClick={() => onOption("down")}
                     variant="red"
                     icon={<DownTrend />}

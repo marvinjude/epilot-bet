@@ -30,6 +30,7 @@ export const resolveOption = inngest.createFunction(
 
     await Option.update(option.id, {
       resolved: true,
+      priceAfterResolve: currentPrice,
     });
 
     await User.update(user.id, {

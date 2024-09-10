@@ -1,14 +1,14 @@
-import { withPageAuthRequired, getSession } from "@auth0/nextjs-auth0";
 import { HomeClient } from "./HomeClient";
 import { User } from "./lib/model";
 import { getCurrentBitcoinPrice } from "./utils/getCurrentPrice";
 import { fetchPriceHistory } from "./utils/fetchPriceHistory";
+import { auth } from "@clerk/nextjs/server";
 
 async function Home() {
-  const session = await getSession();
+  const { userId } = auth();
 
   const [users, BTCPrice, btcPriceHistory] = await Promise.all([
-    User.query("authUserId").eq(session?.user.sub).exec(),
+    User.query("authUserId").eq(userId).exec(),
     getCurrentBitcoinPrice(),
     fetchPriceHistory({ limit: 300 }),
   ]);
@@ -28,6 +28,4 @@ async function Home() {
   );
 }
 
-export default withPageAuthRequired(Home, {
-  returnTo: "/api/auth/login",
-});
+export default Home;

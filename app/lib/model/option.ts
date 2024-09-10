@@ -7,6 +7,7 @@ interface IOption extends Item {
   userId: string;
   type: OptionType;
   priceAtCreation: number;
+  priceAfterResolve: number;
   resolved: boolean;
   resolvedAt: Date;
   createdAt: Date;
@@ -26,6 +27,7 @@ const OptionSchema = new dynamoose.Schema({
     required: true,
   },
   priceAtCreation: Number,
+  priceAfterResolve: Number,
   resolved: Boolean,
   resolvedAt: Date,
   createdAt: Date,

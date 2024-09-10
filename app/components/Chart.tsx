@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 "use client";
 
 import { format } from "d3-format";

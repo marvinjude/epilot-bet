@@ -41,21 +41,16 @@ export const PostSelection = memo(
 
     useEffect(() => {
       if (timeLeft <= 0) {
+        onCountdownEnd();
         return;
       }
-      const interval = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            onCountdownEnd();
-            return 0;
-          }
-          return prev - 1;
-        });
+
+      const intervalId = setInterval(() => {
+        setTimeLeft((prevTime) => Math.max(prevTime - 1, 0));
       }, 1000);
 
-      return () => clearInterval(interval);
-    }, [onCountdownEnd]);
+      return () => clearInterval(intervalId);
+    }, [timeLeft, onCountdownEnd]);
 
     return (
       <div className="flex gap-2 flex-col items-center">
@@ -79,3 +74,5 @@ export const PostSelection = memo(
     );
   }
 );
+
+PostSelection.displayName = "PostSelection";

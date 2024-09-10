@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## EpilotBet
 
-## Getting Started
+Predict that the Price of BTC will go up⬆️ or down⬇️ after one minute!
 
-First, run the development server:
+## How it works
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+When a prediction is made, we send a `POST` request that create a new prediction — calling it Option as they call it in the financial market. The request body looks like so:
+
+```json
+{
+  optionType: "up" | "down", // The prediction
+  timestamp: number, // Timestamp for when the prediction happened
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+On the backend, we persist the prediction in DynamoDB and schedule a background function to check the price of BTC after one minute. The background function will then update the user's score based on the correctness of the prediction.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+On the frontend, after one minute, we pool inngest to see if the background function is done and then update the user's score.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Running locally
 
-## Learn More
+Prerequisites: NodeJS 18.x
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone the repository
+2. copy `.env.example` to `.env.local` and fill in all the environment variables from the following services:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   - [Inngest](https://www.inngest.com/)
+   - [DynamoDB](https://aws.amazon.com/dynamodb/)
+   - [Clerk](https://clerk.com/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Install dependencies - `npm install`
+4. Run NextJS & Inngest dev server - `npm run dev`
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Frontend**: NextJS(API Routes, Server Component)
+- **Storage**: DynamoDB
+- **Scheduling / Background function**: [Inngest](https://www.inngest.com/)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Todo
+
+- [ ] Add tests
+- [ ] Improve accuracy by checking for the price of BTC at a timestamp that is exactly one minute after the prediction was made instead of the current implementation that starts checking after one minute.
+
+<!-- Centered text -->
+<p align="center">
+  Made with ❤️ in Greece 🇬🇷 by <a href="https://linkedin.com/in/jude-agboola">Jude</a>
+</p>
