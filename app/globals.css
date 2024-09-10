@@ -25,3 +25,11 @@ body {
     text-wrap: balance;
   }
 }
+
+.product-heading {
+  background: linear-gradient(74.54deg, #4c4cff 27.73%, #00d7ff 98.72%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
