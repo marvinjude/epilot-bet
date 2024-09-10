@@ -36,6 +36,7 @@ Prerequisites: NodeJS 18.x
 - **Frontend**: NextJS(API Routes, Server Component)
 - **Storage**: DynamoDB
 - **Scheduling / Background function**: [Inngest](https://www.inngest.com/)
+- **Host**: Vercel
 
 ## Todo
 
@@ -44,5 +45,5 @@ Prerequisites: NodeJS 18.x
 
 <!-- Centered text -->
 <p align="center">
-  Made with ❤️ in Greece 🇬🇷 by <a href="https://linkedin.com/in/jude-agboola">Jude</a>
+  Made with ❤️ in Santorini, Greece 🇬🇷 by <a href="https://linkedin.com/in/jude-agboola">Jude</a>
 </p>
