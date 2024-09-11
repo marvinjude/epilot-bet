@@ -2,6 +2,8 @@
 
 Predict that the Price of BTC will go up⬆️ or down⬇️ after one minute!
 
+[Demo](https://epilot-bet.vercel.app)
+
 ## How it works
 
 When a prediction is made, we send a `POST` request that create a new prediction — calling it Option as they call it in the financial market. The request body looks like so:
