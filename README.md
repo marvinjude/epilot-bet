@@ -43,6 +43,7 @@ Prerequisites: NodeJS 18.x
 ## Todo
 
 - [ ] Add tests
+- [ ] Make responsive
 - [ ] Improve accuracy by checking for the price of BTC at a timestamp that is exactly one minute after the prediction was made instead of the current implementation that starts checking after one minute.
 
 <!-- Centered text -->
