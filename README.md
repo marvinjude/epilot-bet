@@ -45,6 +45,8 @@ Prerequisites: NodeJS 18.x
 - [ ] Add tests
 - [ ] Make responsive
 - [ ] Improve accuracy by checking for the price of BTC at a timestamp that is exactly one minute after the prediction was made instead of the current implementation that starts checking after one minute.
+- [ ] Make Frontend recover unsresolved option on refresh
+- [ ] Make graph update as we receive as we receive price details
 
 <!-- Centered text -->
 <p align="center">
